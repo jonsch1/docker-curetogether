@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Content {
+  id          String    @id @default(uuid())
+  title       String    @db.VarChar(255)
+  content     String
+  type        String    @db.VarChar(50) // 'discussion', 'hypothesis', 'educational'
+  subtype     String?   @db.VarChar(50) // For educational: 'article', 'video', 'webinar'
+  difficulty  String?   @db.VarChar(50) // For educational content
+  evidence    String?   // For hypotheses
+  experiment  String?   // For hypotheses
+  resourceUrl String?   // For educational content
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  projectId   String?
+  project     Project?  @relation(fields: [projectId], references: [id])
+  tags        ContentTag[]
+  comments    Comment[]
+  upvotes     UpVote[]    @relation("ContentVotes")
+  views       Int       @default(0)
+}
+
+model Comment {
+  id          String    @id @default(uuid())
+  comment     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  contentId   String
+  content     Content   @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[] @relation("CommentReplies")
+  upvotes     UpVote[]    @relation("CommentVotes")
+}
+
+model ContentTag {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(50)
+  contents  Content[]
+
+  @@unique([name])
+}
+
+model UpVote {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  commentId String?
+  comment   Comment?  @relation("CommentVotes", fields: [commentId], references: [id])
+  contentId String?
+  content   Content?  @relation("ContentVotes", fields: [contentId], references: [id])
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, contentId], name: "userId_contentId")
+  @@unique([userId, commentId], name: "userId_commentId")  // Add this line
+
+}
+
+model Profile {
+  id            String    @id @default(uuid())
+  bio           String?
+  location      String?
+  website       String?
+  github        String?
+  twitter       String?
+  linkedin      String?
+  researchGate  String?
+  specialties   String?
+  organization  String?
+  position      String?
+  userId        String    @unique
+  User          User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String?   @db.VarChar(255)
+  email        String    @unique @db.VarChar(255)
+  Profile      Profile?
+  projects     Project[]
+  statements   Statement[]
+  collaborations ProjectCollaborator[]
+  contents    Content[]    // Changed from forumTopics
+  comments    Comment[]
+  votes       UpVote[]
+}
+
+model Project {
+  id                String   @id @default(uuid())
+  projectName       String   @db.VarChar(255)
+  diseaseName       String   @db.VarChar(255)
+  diseaseCategory   String   @db.VarChar(50)
+  description       String
+  researchGoals     String
+  isPublic          Boolean  @default(true)
+  allowCollaboration Boolean @default(true)
+  createdAt         DateTime @default(now())
+  progress          Int      @default(0)
+  authorId          String
+  author            User     @relation(fields: [authorId], references: [id])
+  statements        Statement[]
+  collaborators     ProjectCollaborator[]
+  contents    Content[]    // Changed from forumTopics
+}
+
+model Statement {
+  id        String   @id @default(uuid())
+  text      String
+  confidence Float
+  createdAt DateTime @default(now())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model ProjectCollaborator {
+  id        String   @id @default(uuid())
+  projectId String
+  userId    String
+  joinedAt  DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([projectId, userId])
+}

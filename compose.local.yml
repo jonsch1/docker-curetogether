@@ -1,0 +1,32 @@
+services:
+  # flask service
+  flaskapi:
+    container_name: flask_api
+    image: flaskapp:1.0.0
+    build:
+      context: ./flask_api
+      dockerfile: flask.dockerfile
+    environment:
+      - EMAIL_ADDRESS=${EMAIL_ADDRESS}
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+
+# db service
+  db:
+    container_name: db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    driver: local

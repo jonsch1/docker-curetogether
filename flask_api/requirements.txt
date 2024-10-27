@@ -1,0 +1,10 @@
+numpy==1.26.4
+pandas==2.2.1
+Flask==3.0.2
+flask-cors==4.0.0
+networkx==3.2.1
+biopython==1.83
+gunicorn==22.0.0
+Werkzeug==3.0.3
+scipy==1.13.0
+requests==2.32.3

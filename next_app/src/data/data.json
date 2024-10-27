@@ -1,0 +1,113 @@
+{
+    "user": {
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "avatar": "/avatars/jane-doe.jpg",
+      "role": "Researcher"
+    },
+    "projects": [
+      {
+        "name": "Cystic Fibrosis Research",
+        "icon": "HeartPulse",
+        "status": "active"
+      },
+      {
+        "name": "Huntington's Disease Study",
+        "icon": "Brain",
+        "status": "new"
+      },
+      {
+        "name": "Rare Blood Disorders",
+        "icon": "Microscope",
+        "status": "archived"
+      }
+    ],
+    "navMain": [
+      {
+        "title": "Dashboard",
+        "url": "/dashboard",
+        "icon": "LayoutDashboard",
+        "isActive": true
+      },
+      {
+        "title": "Projects",
+        "url": "/projects/explore",
+        "icon": "FolderOpen",
+        "items": [
+          {
+            "title": "My Projects",
+            "url": "/dashboard?tab=projects"
+          },
+          {
+            "title": "Explore Projects",
+            "url": "/projects/explore"
+          },
+          {
+            "title": "Create New Project",
+            "url": "/projects/create"
+          }
+        ]
+      },
+      {
+        "title": "Research Tools",
+        "url": "#",
+        "icon": "Microscope",
+        "items": [
+          {
+            "title": "Protein Interactions",
+            "url": "/research-tools/protein-interactions"
+          },
+          {
+            "title": "Molecular Statements",
+            "url": "#"
+          },
+          {
+            "title": "Hypothesis Generator",
+            "url": "#"
+          },
+          {
+            "title": "Literature Search",
+            "url": "#"
+          }
+        ]
+      },
+      {
+        "title": "Community",
+        "url": "/discussions",
+        "icon": "Users",
+        "items": [
+          {
+            "title": "Discussion Forums",
+            "url": "/content?type=discussion"
+          },
+          {
+            "title": "Expert Connect",
+            "url": "#"
+          },
+          {
+            "title": "Patient Stories",
+            "url": "/community/patient-stories"
+          }
+        ]
+      },
+      {
+        "title": "Resources",
+        "url": "#",
+        "icon": "BookOpen",
+        "items": [
+          {
+            "title": "Disease Database",
+            "url": "#"
+          },
+          {
+            "title": "Clinical Trials",
+            "url": "#"
+          },
+          {
+            "title": "Educational Materials",
+            "url": "/content?type=educational"
+          }
+        ]
+      }
+    ]
+  }
