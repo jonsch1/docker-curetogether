@@ -6,8 +6,6 @@ services:
     build:
       context: ./next_app
       dockerfile: next.dockerfile
-    ports:
-      - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
@@ -23,6 +21,8 @@ services:
       flaskapi:
         condition: service_started
     restart: unless-stopped
+    volumes:
+      - ./next_app/prisma:/app/prisma
 
   # flask service
   flaskapi:
@@ -34,8 +34,6 @@ services:
     environment:
       - EMAIL_ADDRESS=${EMAIL_ADDRESS}
       - INDRA_API_KEY=${INDRA_API_KEY}
-    ports:
-      - "4000:4000"
     restart: unless-stopped
 
 
@@ -51,6 +49,19 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Add nginx service
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d:ro
+    depends_on:
+      - nextapp
+      - flaskapi
     restart: unless-stopped
 
 volumes:
