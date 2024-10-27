@@ -57,10 +57,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/conf:/etc/nginx/conf.d:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf:/etc/nginx/ssl/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
     depends_on:
       - nextapp
       - flaskapi
@@ -70,6 +69,8 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
+    ports:
+      - "80:80"  # Add this line to allow certbot to use port 80
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
