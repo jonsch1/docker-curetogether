@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
 import { Graph } from '@/lib/types';
 
-const API_BASE_URL = process.env.FLASK_API_URL;
+// Change the API base URL to use the Nginx proxy path
+const API_BASE_URL = '/flaskapi';
 
 async function fetchNetwork(
   seeds: string[],
   expansionMethod: string,
   interactome: string
 ): Promise<Graph> {
-  const url = `${API_BASE_URL}/api/return_network/${seeds.join(
+  const url = `${API_BASE_URL}/return_network/${seeds.join(
     ","
   )}/${expansionMethod}/${interactome}/`;
   console.log('Fetching from:', url); // Add this for debugging
   
   const response = await fetch(url);
-  
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
