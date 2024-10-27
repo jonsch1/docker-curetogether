@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
 import { Graph } from '@/lib/types';
 
+// Add base URL for the server
+const SERVER_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'http://nginx:80' // Internal Docker network hostname
+  : 'http://localhost:80';
+
 // Change the API base URL to use the Nginx proxy path
-const API_BASE_URL = '/flaskapi';
+const API_BASE_URL = '/flaskapi/api';
 
 async function fetchNetwork(
   seeds: string[],
   expansionMethod: string,
   interactome: string
 ): Promise<Graph> {
-  const url = `${API_BASE_URL}/return_network/${seeds.join(
+  const url = `${SERVER_BASE_URL}${API_BASE_URL}/return_network/${seeds.join(
     ","
   )}/${expansionMethod}/${interactome}/`;
   console.log('Fetching from:', url); // Add this for debugging
