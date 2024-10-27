@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma"
-import { auth } from "@/auth"
 import { NextResponse } from "next/server"
 import { Statement, Content, ProjectCollaborator } from '@prisma/client'
 
@@ -151,16 +150,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth()
-    const user = await prisma.user.findUnique({
-      where: { email: session?.user?.email ?? undefined },
-    })
-
-    const userId = user?.id
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 })
-    }
-
     const project = await prisma.project.findUnique({
       where: {
         id: params.id,

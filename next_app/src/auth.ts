@@ -8,7 +8,14 @@ export const {
   signIn,
   signOut
 } = NextAuth({
-  providers: [Google],
+  providers: [Google({
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+  })],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt"
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       if (!user.email) return false

@@ -22,11 +22,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED=1
+# Add prisma generate to the build process
+RUN npx prisma generate
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
@@ -66,4 +63,9 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+
+# Copy prisma directory for migrations
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# Add migration script to package.json first, then modify CMD
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
