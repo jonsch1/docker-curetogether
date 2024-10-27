@@ -69,13 +69,10 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
-    ports:
-      - "80:80"  # Add this line to allow certbot to use port 80
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
-    # Modified command to use standalone mode instead of webroot
-    command: certonly --standalone --preferred-challenges http --force-renewal --email ${EMAIL_ADDRESS} -d curetogether.one --agree-tos
+    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL_ADDRESS} -d curetogether.one --agree-tos
 
 volumes:
   pgdata:
