@@ -7,7 +7,6 @@ services:
       context: ./next_app
       dockerfile: next.dockerfile
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - AUTH_TRUST_HOST=${AUTH_TRUST_HOST}
       - AUTH_SECRET=${AUTH_SECRET}
